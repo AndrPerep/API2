@@ -2,12 +2,8 @@ import requests
 import os
 from urllib.parse import urlparse
 from dotenv import load_dotenv
-load_dotenv()
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("echo")
-args = parser.parse_args()
 
 def shorten_link(url, headers):
   payload = {
@@ -23,7 +19,7 @@ def shorten_link(url, headers):
 
 def count_clicks(url, headers):
   parsed_url = urlparse(url)
-  bitlink = parsed_url.netloc + parsed_url.path
+  bitlink = '{}{}'.format(parsed_url.netloc, parsed_url.path)
   url_for_count = 'https://api-ssl.bitly.com/v4/bitlinks/{bitlink}/clicks/summary'.format(bitlink=bitlink)
   response = requests.get(url_for_count, headers=headers)
   response.raise_for_status()
@@ -33,12 +29,21 @@ def count_clicks(url, headers):
 
 
 if __name__ == '__main__':
+  load_dotenv()
+
+  help = '''Cократить ссылку: main.py [ваша ссылка с http:// или https://]
+  Узнать количество переходов по битлитнку: main.py [битлинк]'''
+
+  parser = argparse.ArgumentParser()
+  parser.add_argument("url", help=help)
+  args = parser.parse_args()
+
   token = os.getenv('BITLY_TOKEN')
-  url = args.echo#input('Введите ссылку: ')
+  url = args.url
   headers = { 
     'Authorization': 'Bearer {}'.format(token) 
   }
-  
+
   try:
     try:
       print('Количество кликов:', count_clicks(url, headers))
