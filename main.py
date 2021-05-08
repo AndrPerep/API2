@@ -31,11 +31,12 @@ def count_clicks(url, headers):
 if __name__ == '__main__':
   load_dotenv()
 
-  help = '''Cократить ссылку: main.py [ваша ссылка с http:// или https://]
-  Узнать количество переходов по битлитнку: main.py [битлинк]'''
+  description = '''Cократить ссылку: main.py [ваша ссылка с http:// или https://]
+  Узнать количество переходов по битлитнку: main.py [битлинк].'''
+  argument_help = 'Введите ссылку для сокращения или битлинк для вывода количества переходов'
 
-  parser = argparse.ArgumentParser()
-  parser.add_argument("url", help=help)
+  parser = argparse.ArgumentParser(description=description)
+  parser.add_argument("url", help=argument_help)
   args = parser.parse_args()
 
   token = os.getenv('BITLY_TOKEN')
